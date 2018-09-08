@@ -1,6 +1,9 @@
+import os
+
 def get_excluded_words():
+    dirname = os.path.dirname(__file__)
     EXCLUDE_FILES_PATH = '../exclude_lists'
-    exclude_files = [os.path.join(EXCLUDE_FILES_PATH, f) for f in os.listdir(EXCLUDE_FILES_PATH)]
+    exclude_files = [os.path.join(dirname, EXCLUDE_FILES_PATH, f) for f in os.listdir(os.path.join(dirname, EXCLUDE_FILES_PATH))]
     exclude_words = []
 
     for exclude_file in exclude_files:
