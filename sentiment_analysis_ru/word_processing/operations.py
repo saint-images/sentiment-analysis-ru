@@ -4,9 +4,7 @@ def get_word_data(text):
     words = defaultdict(int)
 
     for word in str.split(text, ' '):
-        word = word.lower()
-        for char in ['.', ',', '-', '"', '!', '?', '\n']:
-            word = word.replace(char, '')
+        word = re.sub('[^А-Яа-я]', '', word.lower().replace('ё', 'е'))
         if word:
             words[word] += 1
 
