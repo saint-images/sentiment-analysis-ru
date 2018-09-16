@@ -1,7 +1,7 @@
 from file_io.operations import get_excluded_words
 from text_processing.operations import process_text
 from word_processing.operations import get_word_data
-from database_models.models import Stats
+from database_models.models import Stats, Word
 from mongoengine import connect, DoesNotExist
 from pymongo.errors import OperationFailure 
 from collections import defaultdict
@@ -71,3 +71,21 @@ for text in processed_texts:
     else:
         print('Tone not specified!')
         continue
+
+for word, amount in positive_words.items():
+    try:
+        word_entry = Word.objects.get(word=word)
+    except DoesNotExist:
+        word_entry = Word(word)
+        word_entry.save()
+    word_entry.modify(inc__positive=amount)
+    word_entry.save()
+
+for word, amount in negative_words.items():
+    try:
+        word_entry = Word.objects.get(word=word)
+    except DoesNotExist:
+        word_entry = Word(word)
+        word_entry.save()
+    word_entry.modify(inc__negative=amount)
+    word_entry.save()
