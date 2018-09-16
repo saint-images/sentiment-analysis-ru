@@ -13,4 +13,4 @@ def process_text(text, exclude_words=[]):
     m = Mystem()
     lemmas = m.lemmatize(text)
     text = replace_all(''.join(lemmas[1:-1]), exclude_words)
-    return((lemmas[0], text))
+    return((lemmas[0].strip(), text))
