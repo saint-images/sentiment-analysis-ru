@@ -12,8 +12,5 @@ def replace_all(text, words):
 def process_text(text, exclude_words=[]):
     m = Mystem()
     lemmas = m.lemmatize(text)
-    print(lemmas)
-    text = ''.join(lemmas[:-1])
-
-    text = replace_all(text, exclude_words)
-    return(text)
+    text = replace_all(''.join(lemmas[1:-1]), exclude_words)
+    return((lemmas[0], text))

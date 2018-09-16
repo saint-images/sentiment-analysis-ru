@@ -20,3 +20,4 @@ with open(data_file, "r") as text_file:
             text = ""
     texts.append(text)
     text = ""
+
