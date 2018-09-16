@@ -6,7 +6,7 @@ def get_word_data(text):
 
     for word in str.split(text, ' '):
         word = re.sub('[^А-Яа-я]', '', word.lower().replace('ё', 'е'))
-        if word:
+        if word and not word == 'не':
             words[word] += 1
 
     return dict(words)
