@@ -1,10 +1,18 @@
 from file_io.operations import get_excluded_words
 from text_processing.operations import process_text
+from word_processing.operations import get_word_data
 from database_models.models import Stats
 from mongoengine import connect, DoesNotExist
 from pymongo.errors import OperationFailure 
+from collections import defaultdict
 import argparse
 import getpass
+
+def merge_dicts(dict1, dict2):
+    for k, v in dict2.items():
+        dict1[k] += v
+    
+    return dict1
 
 print('Atlas credentials:')
 db_username = input('Username: ')
@@ -42,7 +50,7 @@ with open(data_file, "r") as text_file:
 
 processed_texts = []
 for text in texts:
-    processed_texts.append(process_text(text))
+    processed_texts.append(process_text(text, exclude_words=excluded_words))
 
 positive_texts = len(list(filter(lambda t: t[0] == '+', processed_texts)))
 negative_texts = len(list(filter(lambda t: t[0] == '-', processed_texts)))
@@ -50,3 +58,16 @@ negative_texts = len(list(filter(lambda t: t[0] == '-', processed_texts)))
 stats.modify(inc__negative=negative_texts)
 stats.modify(inc__positive=positive_texts)
 stats.save()
+
+positive_words = defaultdict(int)
+negative_words = defaultdict(int)
+
+for text in processed_texts:
+    words = get_word_data(text[1])
+    if text[0] == '-':
+        negative_words = merge_dicts(negative_words, words)
+    elif text[0] == '+':
+        positive_words = merge_dicts(positive_words, words)
+    else:
+        print('Tone not specified!')
+        continue

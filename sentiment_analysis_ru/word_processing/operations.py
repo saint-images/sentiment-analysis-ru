@@ -1,4 +1,5 @@
 from collections import defaultdict
+import re
 
 def get_word_data(text):
     words = defaultdict(int)
