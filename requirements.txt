@@ -1,1 +1,2 @@
 pymystem3==0.2.0
+mongoengine==0.15.3
