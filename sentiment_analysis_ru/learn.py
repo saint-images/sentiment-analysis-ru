@@ -5,8 +5,10 @@ from database_models.models import Stats, Word
 from mongoengine import connect, DoesNotExist
 from pymongo.errors import OperationFailure 
 from collections import defaultdict
+from tqdm import tqdm
 import argparse
 import getpass
+
 
 def merge_dicts(dict1, dict2):
     for k, v in dict2.items():
@@ -48,7 +50,8 @@ with open(data_file, "r") as text_file:
     text = ""
 
 processed_texts = []
-for text in texts:
+print('Processing texts...')
+for text in tqdm(texts):
     processed_texts.append(process_text(text, exclude_words=excluded_words))
 
 positive_texts = len(list(filter(lambda t: t[0] == '+', processed_texts)))
@@ -71,7 +74,8 @@ for text in processed_texts:
         print('Tone not specified!')
         continue
 
-for word, amount in positive_words.items():
+print('Saving positive words to the database...')
+for word, amount in tqdm(positive_words.items()):
     try:
         word_entry = Word.objects.get(word=word)
     except DoesNotExist:
@@ -80,7 +84,8 @@ for word, amount in positive_words.items():
     word_entry.modify(inc__positive=amount)
     word_entry.save()
 
-for word, amount in negative_words.items():
+print('Saving negative words to the database...')
+for word, amount in tqdm(negative_words.items()):
     try:
         word_entry = Word.objects.get(word=word)
     except DoesNotExist:
