@@ -39,15 +39,19 @@ excluded_words = get_excluded_words()
 
 texts = []
 with open(data_file, "r") as text_file:
-    text = ""
-    for line in text_file:
-        if not line=="\n":
-            text += line.replace('\n', ' ')
-        else:
-            texts.append(text)
-            text = ""
-    texts.append(text)
-    text = ""
+    with open('data_log.txt', 'a') as log_file:
+        text = ""
+        for line in text_file:
+            log_file.write(line)
+            if not line=="\n":
+                text += line.replace('\n', ' ')
+            else:
+                texts.append(text)
+                text = ""
+        texts.append(text)
+        log_file.write('\n')
+        log_file.write('\n')
+        text = ""
 
 processed_texts = []
 print('Processing texts...')
