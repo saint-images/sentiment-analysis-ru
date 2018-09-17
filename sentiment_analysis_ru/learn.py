@@ -39,7 +39,6 @@ texts = []
 with open(data_file, "r") as text_file:
     text = ""
     for line in text_file:
-        print(repr(line))
         if not line=="\n":
             text += line.replace('\n', ' ')
         else:
