@@ -97,3 +97,5 @@ for word, amount in tqdm(negative_words.items()):
         word_entry.save()
     word_entry.modify(inc__negative=amount)
     word_entry.save()
+
+open(data_file, "w").close()
