@@ -1,6 +1,3 @@
-from pprint import pprint
-import json
-from collections import defaultdict
 from pymystem3 import Mystem
 import re
 
