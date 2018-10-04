@@ -16,6 +16,11 @@ def merge_dicts(dict1, dict2):
     
     return dict1
 
+parser = argparse.ArgumentParser()
+parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
+args = parser.parse_args()
+data_file = args.data[0]
+
 print('Atlas credentials:')
 db_username = input('Username: ')
 db_password = getpass.getpass()
@@ -29,11 +34,6 @@ except DoesNotExist:
 except OperationFailure:
     print('Database authentication failed!')
     exit()
-
-parser = argparse.ArgumentParser()
-parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
-args = parser.parse_args()
-data_file = args.data[0]
 
 excluded_words = get_excluded_words()
 
