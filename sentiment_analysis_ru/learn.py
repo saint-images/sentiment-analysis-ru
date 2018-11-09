@@ -85,7 +85,7 @@ for word, amount in tqdm(positive_words.items()):
     except DoesNotExist:
         word_entry = Word(word)
         word_entry.save()
-    word_entry.modify(inc__positive=amount)
+    word_entry.modify(inc__positive=1)
     word_entry.save()
 
 print('Saving negative words to the database...')
@@ -95,7 +95,7 @@ for word, amount in tqdm(negative_words.items()):
     except DoesNotExist:
         word_entry = Word(word)
         word_entry.save()
-    word_entry.modify(inc__negative=amount)
+    word_entry.modify(inc__negative=1)
     word_entry.save()
 
 open(data_file, "w").close()
