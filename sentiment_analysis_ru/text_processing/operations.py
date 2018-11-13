@@ -6,8 +6,12 @@ def replace_all(text, words):
         text = re.sub(r"\b%s\b" % i, '', text)
     return text
 
-def process_text(text, exclude_words=[]):
+def process_text(text, exclude_words=[], analyze=False):
     m = Mystem()
     lemmas = m.lemmatize(text)
-    text = replace_all(''.join(lemmas[1:-1]), exclude_words) # the last element is always \n for some reason
-    return((lemmas[0].strip(), text))
+    if analyze:
+        text = replace_all(''.join(lemmas[:-1]), exclude_words)
+        return text
+    else:
+        text = replace_all(''.join(lemmas[1:-1]), exclude_words) # the last element is always \n for some reason
+        return((lemmas[0].strip(), text))
