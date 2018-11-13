@@ -1,6 +1,7 @@
 .vscode
 data.txt
 data_log.txt
+input.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
