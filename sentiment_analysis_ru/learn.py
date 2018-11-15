@@ -1,13 +1,15 @@
+import argparse
+import getpass
+from collections import defaultdict
+
+from mongoengine import DoesNotExist, connect
+from pymongo.errors import OperationFailure
+from tqdm import tqdm
+
+from database_models.models import Stats, Word
 from file_io.operations import get_excluded_words
 from text_processing.operations import process_text
 from word_processing.operations import get_word_data
-from database_models.models import Stats, Word
-from mongoengine import connect, DoesNotExist
-from pymongo.errors import OperationFailure 
-from collections import defaultdict
-from tqdm import tqdm
-import argparse
-import getpass
 
 
 def merge_dicts(dict1, dict2):
