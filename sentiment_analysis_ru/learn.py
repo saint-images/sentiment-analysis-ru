@@ -18,6 +18,55 @@ def merge_dicts(dict1, dict2):
     
     return dict1
 
+def learn(texts):
+    processed_texts = []
+    print('Processing texts...')
+    for text in tqdm(texts):
+        processed_texts.append(process_text(text, exclude_words=excluded_words))
+
+    positive_texts = len(list(filter(lambda t: t[0] == '+', processed_texts)))
+    negative_texts = len(list(filter(lambda t: t[0] == '-', processed_texts)))
+
+    stats.modify(inc__negative=negative_texts)
+    stats.modify(inc__positive=positive_texts)
+    stats.save()
+
+    positive_words = defaultdict(int)
+    negative_words = defaultdict(int)
+
+    for text in processed_texts:
+        words = get_word_data(text[1])
+        if text[0] == '-':
+            negative_words = merge_dicts(negative_words, words)
+        elif text[0] == '+':
+            positive_words = merge_dicts(positive_words, words)
+        else:
+            print('Tone not specified!')
+            continue
+
+    print('Saving positive words to the database...')
+    for word, amount in tqdm(positive_words.items()):
+        try:
+            word_entry = Word.objects.get(word=word)
+        except DoesNotExist:
+            word_entry = Word(word)
+            word_entry.save()
+        word_entry.modify(inc__positive=1)
+        word_entry.save()
+
+    print('Saving negative words to the database...')
+    for word, amount in tqdm(negative_words.items()):
+        try:
+            word_entry = Word.objects.get(word=word)
+        except DoesNotExist:
+            word_entry = Word(word)
+            word_entry.save()
+        word_entry.modify(inc__negative=1)
+        word_entry.save()
+
+    open(data_file, "w").close()
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
 args = parser.parse_args()
@@ -55,49 +104,4 @@ with open(data_file, "r") as text_file:
         log_file.write('\n')
         text = ""
 
-processed_texts = []
-print('Processing texts...')
-for text in tqdm(texts):
-    processed_texts.append(process_text(text, exclude_words=excluded_words))
-
-positive_texts = len(list(filter(lambda t: t[0] == '+', processed_texts)))
-negative_texts = len(list(filter(lambda t: t[0] == '-', processed_texts)))
-
-stats.modify(inc__negative=negative_texts)
-stats.modify(inc__positive=positive_texts)
-stats.save()
-
-positive_words = defaultdict(int)
-negative_words = defaultdict(int)
-
-for text in processed_texts:
-    words = get_word_data(text[1])
-    if text[0] == '-':
-        negative_words = merge_dicts(negative_words, words)
-    elif text[0] == '+':
-        positive_words = merge_dicts(positive_words, words)
-    else:
-        print('Tone not specified!')
-        continue
-
-print('Saving positive words to the database...')
-for word, amount in tqdm(positive_words.items()):
-    try:
-        word_entry = Word.objects.get(word=word)
-    except DoesNotExist:
-        word_entry = Word(word)
-        word_entry.save()
-    word_entry.modify(inc__positive=1)
-    word_entry.save()
-
-print('Saving negative words to the database...')
-for word, amount in tqdm(negative_words.items()):
-    try:
-        word_entry = Word.objects.get(word=word)
-    except DoesNotExist:
-        word_entry = Word(word)
-        word_entry.save()
-    word_entry.modify(inc__negative=1)
-    word_entry.save()
-
-open(data_file, "w").close()
+learn(texts)
