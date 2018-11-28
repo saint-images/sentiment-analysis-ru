@@ -33,6 +33,7 @@ def learn(texts, username=None, password=None):
         print('Database authentication failed!')
         exit()
     
+    excluded_words = get_excluded_words()
     processed_texts = []
     print('Processing texts...')
     for text in tqdm(texts):
@@ -78,15 +79,11 @@ def learn(texts, username=None, password=None):
         word_entry.modify(inc__negative=1)
         word_entry.save()
 
-    open(data_file, "w").close()
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
     args = parser.parse_args()
     data_file = args.data[0]
-
-    excluded_words = get_excluded_words()
 
     texts = []
     with open(data_file, "r") as text_file:
@@ -105,3 +102,4 @@ if __name__ == "__main__":
             text = ""
 
     learn(texts)
+    open(data_file, "w").close()

@@ -75,4 +75,17 @@ for word in words:
 
 print("Sum: ", sum)
 tone = "positive" if sum > 0 else "negative"
-print(f"This text in {tone} (y/n):")
+while True:
+    response = input(f"This text in {tone} (y/n):")
+    if response == "" or response == "y":
+        if sum > 0:
+            learn(["+ " + text], db_username, db_password)
+        else:
+            learn(["- " + text], db_username, db_password)
+        break
+    elif response == "n":
+        if sum <= 0:
+            learn(["+ " + text], db_username, db_password)
+        else:
+            learn(["- " + text], db_username, db_password)
+        break
