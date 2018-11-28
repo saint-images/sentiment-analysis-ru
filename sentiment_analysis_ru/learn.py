@@ -18,7 +18,21 @@ def merge_dicts(dict1, dict2):
     
     return dict1
 
-def learn(texts):
+def learn(texts, username=None, password=None):
+    print('Atlas credentials:')
+    db_username = username if username is not None else input('Username: ')
+    db_password = password if username is not None else getpass.getpass()
+
+    connect(db='SentimentAnalysis', host=f'mongodb+srv://{db_username}:{db_password}@sentimentanalysis-hpnfo.mongodb.net/SentimentAnalysis?retryWrites=true')
+    try:
+        stats = Stats.objects.get()
+    except DoesNotExist:
+        stats = Stats()
+        stats.save()
+    except OperationFailure:
+        print('Database authentication failed!')
+        exit()
+    
     processed_texts = []
     print('Processing texts...')
     for text in tqdm(texts):
@@ -66,42 +80,28 @@ def learn(texts):
 
     open(data_file, "w").close()
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
+    args = parser.parse_args()
+    data_file = args.data[0]
 
-parser = argparse.ArgumentParser()
-parser.add_argument('data', type=str, nargs=1, help='The name of the file containing data for learning')
-args = parser.parse_args()
-data_file = args.data[0]
+    excluded_words = get_excluded_words()
 
-print('Atlas credentials:')
-db_username = input('Username: ')
-db_password = getpass.getpass()
+    texts = []
+    with open(data_file, "r") as text_file:
+        with open('data_log.txt', 'a') as log_file:
+            text = ""
+            for line in text_file:
+                log_file.write(line)
+                if not line=="\n":
+                    text += line.replace('\n', ' ')
+                else:
+                    texts.append(text)
+                    text = ""
+            texts.append(text)
+            log_file.write('\n')
+            log_file.write('\n')
+            text = ""
 
-connect(db='SentimentAnalysis', host=f'mongodb+srv://{db_username}:{db_password}@sentimentanalysis-hpnfo.mongodb.net/SentimentAnalysis?retryWrites=true')
-try:
-    stats = Stats.objects.get()
-except DoesNotExist:
-    stats = Stats()
-    stats.save()
-except OperationFailure:
-    print('Database authentication failed!')
-    exit()
-
-excluded_words = get_excluded_words()
-
-texts = []
-with open(data_file, "r") as text_file:
-    with open('data_log.txt', 'a') as log_file:
-        text = ""
-        for line in text_file:
-            log_file.write(line)
-            if not line=="\n":
-                text += line.replace('\n', ' ')
-            else:
-                texts.append(text)
-                text = ""
-        texts.append(text)
-        log_file.write('\n')
-        log_file.write('\n')
-        text = ""
-
-learn(texts)
+    learn(texts)

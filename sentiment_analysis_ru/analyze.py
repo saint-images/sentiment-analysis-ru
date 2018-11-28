@@ -7,6 +7,7 @@ from mongoengine import DoesNotExist, connect
 from pymongo.errors import OperationFailure
 from tqdm import tqdm
 
+from learn import learn
 from database_models.models import Stats, Word
 from file_io.operations import get_excluded_words
 from text_processing.operations import process_text
@@ -73,3 +74,5 @@ for word in words:
         print("Slow down here mate: ", word)
 
 print("Sum: ", sum)
+tone = "positive" if sum > 0 else "negative"
+print(f"This text in {tone} (y/n):")
