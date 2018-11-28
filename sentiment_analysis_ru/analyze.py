@@ -15,6 +15,7 @@ from word_processing.operations import get_word_data
 
 parser = argparse.ArgumentParser()
 parser.add_argument('data', type=str, nargs=1, help='The name of the file containing the text to be analyzed')
+parser.add_argument('--hybrid', help='Print more data', action='store_true')
 args = parser.parse_args()
 data_file = args.data[0]
 
@@ -75,17 +76,19 @@ for word in words:
 
 print("Sum: ", sum)
 tone = "positive" if sum > 0 else "negative"
-while True:
-    response = input(f"This text in {tone} (y/n):")
-    if response == "" or response == "y":
-        if sum > 0:
-            learn(["+ " + text], db_username, db_password)
-        else:
-            learn(["- " + text], db_username, db_password)
-        break
-    elif response == "n":
-        if sum <= 0:
-            learn(["+ " + text], db_username, db_password)
-        else:
-            learn(["- " + text], db_username, db_password)
-        break
+print(f"This text is {tone}")
+if args.hybrid:
+    while True:
+        response = input(f"Is this correct? (y/n):")
+        if response == "" or response == "y":
+            if sum > 0:
+                learn(["+ " + text], db_username, db_password)
+            else:
+                learn(["- " + text], db_username, db_password)
+            break
+        elif response == "n":
+            if sum <= 0:
+                learn(["+ " + text], db_username, db_password)
+            else:
+                learn(["- " + text], db_username, db_password)
+            break

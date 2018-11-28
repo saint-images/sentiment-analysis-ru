@@ -7,7 +7,7 @@ def get_word_data(text):
     for word in str.split(text, ' '):
         if word.startswith('@') or word.startswith('#'): # Twitter stuff
             continue
-        word = re.sub('[^А-Яа-я]', '', word.lower().replace('ё', 'е'))
+        word = re.sub('[^А-Яа-я]', ' ', word.lower().replace('ё', 'е'))
         if word and not word == 'не': # temporary workaround
             words[word] += 1
 

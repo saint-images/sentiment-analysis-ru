@@ -50,6 +50,7 @@ def learn(texts, username=None, password=None):
     negative_words = defaultdict(int)
 
     for text in processed_texts:
+        print(text[0])
         words = get_word_data(text[1])
         if text[0] == '-':
             negative_words = merge_dicts(negative_words, words)
