@@ -2,6 +2,7 @@
 data.txt
 data_log.txt
 input.txt
+secret.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

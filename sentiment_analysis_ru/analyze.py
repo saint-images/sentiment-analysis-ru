@@ -19,9 +19,12 @@ parser.add_argument('--hybrid', help='Print more data', action='store_true')
 args = parser.parse_args()
 data_file = args.data[0]
 
-print('Atlas credentials:')
-db_username = input('Username: ')
-db_password = getpass.getpass()
+with open("secret.txt") as file:
+    for line in file:
+        db_username, db_password = line.strip().split(" ")
+# print('Atlas credentials:')
+# db_username = input('Username: ')
+# db_password = getpass.getpass()
 
 connect(db='SentimentAnalysis', host=f'mongodb+srv://{db_username}:{db_password}@sentimentanalysis-hpnfo.mongodb.net/SentimentAnalysis?retryWrites=true')
 try:
@@ -54,7 +57,7 @@ words = [word for word in words if not word == ""]
 sum = 0
 for word in words:
     try:
-        word_entry = Word.objects(word=word).get()
+        word_entry = Word.objects(word=word.strip()).get()
         count = words.count(word)
         positive_texts = stats.positive
         negative_texts = stats.negative
@@ -72,7 +75,7 @@ for word in words:
         sum += weight
         print(f'{word}: {weight}')
     except DoesNotExist:
-        print("Slow down here mate: ", word)
+        print("Slow down here mate:", word)
 
 print("Sum: ", sum)
 tone = "positive" if sum > 0 else "negative"

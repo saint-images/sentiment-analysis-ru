@@ -69,6 +69,10 @@ def learn(texts, username=None, password=None):
             word_entry.save()
         word_entry.modify(inc__positive=1)
         word_entry.save()
+        try:
+            word_entry = Word.objects.get(word=word)
+        except DoesNotExist:
+            print("something's wrong with", word)
 
     print('Saving negative words to the database...')
     for word, amount in tqdm(negative_words.items()):
